@@ -68,5 +68,33 @@ namespace DB
                 return e.ToString();
             }
         }
+
+        public string AddDriver(string name, string surname, string patron)
+        {
+            try
+            {
+                SqlCommand command = new SqlCommand(
+                    $"INSERT INTO DB2.dbo.driver (name, surname, patronymic) values ('{name}', '{surname}', '{patron}');", connection);
+                return $"comand complete: {command.ExecuteNonQuery()}";
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+        }
+
+        public string AddAuto(string name, string number, string driverId, string autoTypeId)
+        {
+            try
+            {
+                SqlCommand command = new SqlCommand(
+                    $"INSERT INTO DB2.dbo.auto (name, number, driver_id, type_auto_id) values ('{name}', '{number}', '{driverId}', '{autoTypeId}');", connection);
+                return $"comand complete: {command.ExecuteNonQuery()}";
+            }
+            catch (Exception e)
+            {
+                return e.ToString();
+            }
+        }
     }
 }

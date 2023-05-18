@@ -37,9 +37,9 @@ namespace DB
         private void button1_Click(object sender, EventArgs e)
         {//Server=DESKTOP-ESOIDTB\\SQLEXPRESS;Integrated Security=true;
             DatabaseWorks database = new DatabaseWorks(Connection);
-            dataGridView1.DataSource = database.ReturnTable("*", "DB2.dbo.type_street", null).Tables[0].DefaultView;
-            dataGridView2.DataSource = database.ReturnTable("*", "DB2.dbo.type_auto", null).Tables[0].DefaultView;
-            dataGridView3.DataSource = database.ReturnTable("*", "DB2.dbo.status_load", null).Tables[0].DefaultView;
+            dataGridViewStreetType.DataSource = database.ReturnTable("*", "DB2.dbo.type_street", null).Tables[0].DefaultView;
+            dataGridViewAutoType.DataSource = database.ReturnTable("*", "DB2.dbo.type_auto", null).Tables[0].DefaultView;
+            dataGridViewLoadStatus.DataSource = database.ReturnTable("*", "DB2.dbo.status_load", null).Tables[0].DefaultView;
 
             LoadComboBox();
 /*            var queryListCodeRequest = "SELECT * FROM type_auto";
@@ -115,8 +115,6 @@ namespace DB
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-
-
         }
 
 
@@ -130,10 +128,66 @@ namespace DB
                 DataTable table = new DataTable();
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.Fill(table);
-                comboBox1.DisplayMember = "Auto";
-                comboBox1.ValueMember = "id";
-                comboBox1.DataSource = table;
+                comboBoxAutoTypeInsert.DisplayMember = "Auto";
+                comboBoxAutoTypeInsert.ValueMember = "id";
+                comboBoxAutoTypeInsert.DataSource = table;
             }
+        }
+
+        private void buttonAddDriver_Click(object sender, EventArgs e)
+        {
+            DatabaseWorks database = new DatabaseWorks(Connection);
+            database.AddDriver(textBoxDriverName.Text, textBoxDriverSurname.Text, textBoxDriverPatron.Text);
+            database.connection.Close();
+        }
+
+        private void tabControlDictionaries_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DatabaseWorks database = new DatabaseWorks(Connection);
+            switch (tabControl1.SelectedIndex)
+            {
+                case 0:
+                    dataGridViewStreetType.DataSource = database.ReturnTable("*", "DB2.dbo.type_street", null).Tables[0].DefaultView;
+                    break;
+                case 1:
+                    dataGridViewAutoType.DataSource = database.ReturnTable("*", "DB2.dbo.type_auto", null).Tables[0].DefaultView;
+                    break;
+                case 2:
+                    dataGridViewLoadStatus.DataSource = database.ReturnTable("*", "DB2.dbo.status_load", null).Tables[0].DefaultView;
+                    break;
+            }
+            database.connection.Close();
+        }
+
+        private void tabControlFilling_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DatabaseWorks database = new DatabaseWorks(Connection);
+            switch (tabControlFilling.SelectedIndex)
+            {
+                case 2:
+                    dataGridViewBuffer.DataSource = database.ReturnTable("*", "DB2.dbo.driver", null).Tables[0].DefaultView;
+                    comboBoxDriverInsert.Items.Clear();
+                    for (int i = 0; i < dataGridViewBuffer.Rows.Count - 1; i++)
+                    {
+                        comboBoxDriverInsert.Items.Add($"{dataGridViewBuffer.Rows[i].Cells[0].Value} {dataGridViewBuffer.Rows[i].Cells[1].Value} {dataGridViewBuffer.Rows[i].Cells[2].Value} {dataGridViewBuffer.Rows[i].Cells[3].Value}");
+                    }
+                    database.connection.Close();
+                    database = new DatabaseWorks(Connection);
+                    dataGridViewBuffer.DataSource = database.ReturnTable("*", "DB2.dbo.type_auto", null).Tables[0].DefaultView;
+                    comboBoxAutoTypeInsert.Items.Clear();
+                    for (int i = 0; i < dataGridViewBuffer.Rows.Count - 1; i++)
+                    {
+                        comboBoxAutoTypeInsert.Items.Add($"{dataGridViewBuffer.Rows[i].Cells[0].Value} {dataGridViewBuffer.Rows[i].Cells[1].Value}");
+                    }
+                    break;
+            }
+        }
+
+        private void buttonAutoAdd_Click(object sender, EventArgs e)
+        {
+            DatabaseWorks database = new DatabaseWorks(Connection);
+            database.AddAuto(textBoxAutoName.Text, textBoxAutoNumber.Text, comboBoxDriverInsert.Text.Split(' ')[0], comboBoxAutoTypeInsert.Text.Split(' ')[0]);
+            database.connection.Close();
         }
     }
 }
