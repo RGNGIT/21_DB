@@ -144,7 +144,7 @@ namespace DB
         private void tabControlDictionaries_SelectedIndexChanged(object sender, EventArgs e)
         {
             DatabaseWorks database = new DatabaseWorks(Connection);
-            switch (tabControl1.SelectedIndex)
+            switch (tabControlDictionaries.SelectedIndex)
             {
                 case 0:
                     dataGridViewStreetType.DataSource = database.ReturnTable("*", "DB2.dbo.type_street", null).Tables[0].DefaultView;
